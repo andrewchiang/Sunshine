@@ -41,3 +41,6 @@ project.properties
 ##Gradle-based build
 .gradle
 build/
+
+# every files in captures folder
+captures/
