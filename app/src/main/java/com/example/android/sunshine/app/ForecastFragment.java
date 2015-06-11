@@ -36,6 +36,10 @@ import java.util.List;
  */
 public class ForecastFragment extends Fragment {
 
+    // declare this adapter as a global variable in order for
+    // FetchWeatherTask to update data retrieving from internet.
+    private ArrayAdapter<String> forecastAdapter;
+
     public ForecastFragment() {
     }
 
@@ -79,7 +83,9 @@ public class ForecastFragment extends Fragment {
         };
 
         List<String> weekForecast = new ArrayList<>(Arrays.asList(data));
-        ArrayAdapter<String> forecastAdapter =
+
+        // change the declaration from local to global.
+        forecastAdapter =
                 new ArrayAdapter<String>(
                         getActivity(),
                         R.layout.list_item_forecast,
@@ -193,9 +199,11 @@ public class ForecastFragment extends Fragment {
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
             }
 
+
             for (String s : resultStrs) {
                 Log.v(LOG_TAG, "Forecast entry: " + s);
             }
+
             return resultStrs;
 
         }
@@ -294,6 +302,21 @@ public class ForecastFragment extends Fragment {
             }
 
             return null;
+        }
+
+        /**
+         * This method will be called after doInBackground() is done.
+         * This method is used to update the Main thread(UI thread).
+         * @param result, the value returned by doInBackground().
+         */
+        @Override
+        protected void onPostExecute(String[] result) {
+            if(result != null){
+                forecastAdapter.clear(); // remove the existing data.
+                for(String s : result){
+                    forecastAdapter.add(s); // add each day's forecast string.
+                }
+            }
         }
     }
 }
